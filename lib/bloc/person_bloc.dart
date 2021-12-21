@@ -13,6 +13,8 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
   PersonBloc() : super(PersonInitial()) {
     on<GetPersonEvent>(getPerson);
     on<CreatePersonEvent>(addPerson);
+    on<EditPersonEvent>(editPerson);
+    on<DeletePersonEvent>(deletePerson);
   }
 
   FutureOr<void> getPerson(
@@ -38,11 +40,33 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
           firstName: event.firstName,
           lastName: event.lastName,
           message: event.message);
-      if (newPerson == null) {
-        emit(const FailureSubmitPersonState(errorMessage: 'Error submit'));
-      } else {
-        emit(SuccessSubmitPersonState());
-      }
+      emit(YourPesonState(yourperson: newPerson));
+    } catch (e) {
+      emit(const PersonLoadingError(message: 'Error to load data'));
+    }
+  }
+
+  FutureOr<void> editPerson(
+      EditPersonEvent event, Emitter<PersonState> emit) async {
+    emit(PersonLoading());
+    try {
+      final newPerson = await _apiClientResponse.editData(
+          id: event.id,
+          firstname: event.firstName,
+          lastname: event.lastName,
+          message: event.message);
+      emit(YourPesonState(yourperson: newPerson));
+    } catch (e) {
+      emit(const PersonLoadingError(message: 'Error to load data'));
+    }
+  }
+
+  FutureOr<void> deletePerson(
+      DeletePersonEvent event, Emitter<PersonState> emit) async {
+    emit(PersonLoading());
+    try {
+      final newPerson = await _apiClientResponse.deleteData(id: event.id);
+      emit(YourPesonState(yourperson: newPerson));
     } catch (e) {
       emit(const PersonLoadingError(message: 'Error to load data'));
     }

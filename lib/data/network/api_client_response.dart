@@ -19,10 +19,6 @@ class ApiClientResponse {
 
       if (response.statusCode == 200) {
         return List<Person>.from(response.data.map((e) => Person.fromJson(e)));
-
-        // List<dynamic> it = response.data;
-        // List<Person> person = it.map((e) => Person.fromJson(e)).toList();
-        // return person;
       } else {
         throw Exception('Error to load data');
       }
@@ -59,24 +55,38 @@ class ApiClientResponse {
     }
     return data!;
   }
-}
 
   // editData
-//   Future<List<Person>> editData(
-//       {String? id,
-//       String? firstname,
-//       String? lastname,
-//       String? message}) async {
-//     List<Person>? editPerson;
-//     try {
-//       Response response = await _dio.put('/Person/$id');
+  Future<Person> editData(
+      {String? id,
+      String? firstname,
+      String? lastname,
+      String? message}) async {
+    Person? data;
+    try {
+      Response response = await _dio.put('/Person/$id', data: {
+        'id': id,
+        'firstname': firstname,
+        'lastname': lastname,
+        'message': message,
+      });
+      Person person = Person.fromJson(response.data);
+      return data = person;
+    } on DioError catch (e) {
+      e.toString();
+    }
+    return data!;
+  }
 
-//       if (response.statusCode == 200) {
-//         return response.data;
-//       }
-//     } on DioError catch (e) {
-//       e.toString();
-//     }
-//     return editPerson!;
-//   }
-// }
+  Future<Person> deleteData({String? id}) async {
+    Person? data;
+    try {
+      Response response = await _dio.delete('/Person/$id');
+      Person person = Person.fromJson(response.data);
+      return data = person;
+    } on DioError catch (e) {
+      e.toString();
+    }
+    return data!;
+  }
+}

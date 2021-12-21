@@ -38,3 +38,13 @@ class EditPersonEvent extends PersonEvent {
   @override
   List<Object> get props => [firstName, lastName, message, id];
 }
+
+class DeletePersonEvent extends PersonEvent {
+  final String id;
+
+  const DeletePersonEvent({
+    required this.id,
+  });
+  @override
+  List<Object> get props => [id];
+}

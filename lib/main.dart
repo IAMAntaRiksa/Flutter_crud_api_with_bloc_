@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<PersonBloc>(
       create: (context) => PersonBloc(),
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,

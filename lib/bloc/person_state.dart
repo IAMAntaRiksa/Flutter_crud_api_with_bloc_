@@ -40,14 +40,3 @@ class YourPesonState extends PersonState {
   @override
   List<Object> get props => [yourperson];
 }
-
-class FailureSubmitPersonState extends PersonState {
-  final String errorMessage;
-
-  const FailureSubmitPersonState({required this.errorMessage});
-
-  @override
-  List<Object> get props => [errorMessage];
-}
-
-class SuccessSubmitPersonState extends PersonState {}

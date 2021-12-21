@@ -1,62 +1,78 @@
-import 'package:crud/bloc/person_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:crud/bloc/person_bloc.dart';
+import 'package:crud/data/model/person.dart';
+
 class EditPersonScreen extends StatefulWidget {
-  final bool newPerson;
+  final bool? newPerson;
+  final Person? litPerosn;
+
   const EditPersonScreen({
     Key? key,
-    required this.newPerson,
+    this.newPerson,
+    this.litPerosn,
   }) : super(key: key);
-  static const String routeName = '/editperson';
 
   @override
   State<EditPersonScreen> createState() => _EditPersonScreenState();
 }
 
 class _EditPersonScreenState extends State<EditPersonScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _firstNameEditingControlle = TextEditingController();
-  final _lasNameEditingControlle = TextEditingController();
-  final _messageEditingControlle = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scafoldState = GlobalKey<ScaffoldState>();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final _firstNameEditingControlle = TextEditingController(
+        text: widget.litPerosn != null ? widget.litPerosn!.firstname : '');
+    final _lasNameEditingControlle = TextEditingController(
+        text: widget.litPerosn != null ? widget.litPerosn!.lastname : '');
+    final _messageEditingControlle = TextEditingController(
+        text: widget.litPerosn != null ? widget.litPerosn!.message : '');
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Add Data'),
-        ),
-        body: Form(
-          key: _formKey,
-          child: Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  PersonFirtName(
-                      firstNameEditingControlle: _firstNameEditingControlle),
-                  const SizedBox(height: 15),
-                  PersonLastName(
-                      lasNameEditingControlle: _lasNameEditingControlle),
-                  const SizedBox(height: 15),
-                  PersonMessage(
-                      messageEditingControlle: _messageEditingControlle),
-                  const SizedBox(height: 15),
-                  ElevatedButton.icon(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          BlocProvider.of<PersonBloc>(context).add(
-                              CreatePersonEvent(
-                                  firstName: _firstNameEditingControlle.text,
-                                  lastName: _lasNameEditingControlle.text,
-                                  message: _messageEditingControlle.text));
+      key: _scafoldState,
+      appBar: AppBar(
+        title: Text(widget.newPerson! ? "Add Data" : "Edit Data"),
+      ),
+      body: Form(
+        key: _formKey,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              PersonFirtName(
+                  firstNameEditingControlle: _firstNameEditingControlle),
+              const SizedBox(height: 15),
+              PersonLastName(lasNameEditingControlle: _lasNameEditingControlle),
+              const SizedBox(height: 15),
+              PersonMessage(messageEditingControlle: _messageEditingControlle),
+              const SizedBox(height: 15),
+              ElevatedButton.icon(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      widget.newPerson!
+                          ? context.read<PersonBloc>().add(CreatePersonEvent(
+                                firstName: _firstNameEditingControlle.text,
+                                lastName: _lasNameEditingControlle.text,
+                                message: _messageEditingControlle.text,
+                              ))
+                          : context.read<PersonBloc>().add(EditPersonEvent(
+                                id: widget.litPerosn!.id.toString(),
+                                firstName: _firstNameEditingControlle.text,
+                                lastName: _lasNameEditingControlle.text,
+                                message: _messageEditingControlle.text,
+                              ));
 
-                          Navigator.pop(context);
-                        }
-                      },
-                      icon: const Icon(Icons.add),
-                      label: Text(widget.newPerson ? 'Add' : 'Edit'))
-                ],
-              )),
-        ));
+                      Navigator.pop(context, true);
+                    }
+                  },
+                  icon: const Icon(Icons.add),
+                  label: Text(widget.newPerson! ? 'Add' : 'Edit'))
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

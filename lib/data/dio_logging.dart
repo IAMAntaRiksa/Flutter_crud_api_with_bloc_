@@ -30,7 +30,7 @@ class Logging extends Interceptor {
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
     print(
-        "<-- ${err.message} ${(err.response?.requestOptions != null ? ('${err.response?.requestOptions.baseUrl ?? ''}' + '${err.response?.requestOptions.path ?? ''}') : 'URL')}");
+        "<-- ${err.message} ${(err.response?.requestOptions != null ? ('${err.response?.requestOptions.baseUrl ?? ''}' '${err.response?.requestOptions.path ?? ''}') : 'URL')}");
     print("${err.response != null ? err.response?.data : 'Unknown Error'}");
     print("<-- End error");
     return super.onError(err, handler);
